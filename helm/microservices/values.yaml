@@ -1,0 +1,34 @@
+# helm/microservices/values.yaml
+global:
+  environment: development
+
+gateway:
+  name: api-gateway
+  replicaCount: 1
+  image:
+    repository: your-dockerhub-username/agri-sync-gateway
+    tag: latest
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 3000
+
+userService:
+  name: user-service
+  replicaCount: 1
+  image:
+    repository: your-dockerhub-username/agri-sync-user
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5000
+
+rewardService:
+  name: reward-service
+  replicaCount: 1
+  image:
+    repository: your-dockerhub-username/agri-sync-reward
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5000

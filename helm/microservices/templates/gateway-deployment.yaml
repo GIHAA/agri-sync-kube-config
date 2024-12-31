@@ -1,0 +1,25 @@
+# helm/microservices/templates/gateway-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.gateway.name }}
+spec:
+  replicas: {{ .Values.gateway.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.gateway.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.gateway.name }}
+    spec:
+      containers:
+        - name: {{ .Values.gateway.name }}
+          image: "{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag }}"
+          ports:
+            - containerPort: 3000
+          env:
+            - name: USER_SERVICE_URL
+              value: "http://{{ .Values.userService.name }}:{{ .Values.userService.service.port }}"
+            - name: REWARD_SERVICE_URL
+              value: "http://{{ .Values.rewardService.name }}:{{ .Values.rewardService.service.port }}"

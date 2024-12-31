@@ -1,0 +1,20 @@
+# helm/microservices/templates/reward-service-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.rewardService.name }}
+spec:
+  replicas: {{ .Values.rewardService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.rewardService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.rewardService.name }}
+    spec:
+      containers:
+        - name: {{ .Values.rewardService.name }}
+          image: "{{ .Values.rewardService.image.repository }}:{{ .Values.rewardService.image.tag }}"
+          ports:
+            - containerPort: 5000
