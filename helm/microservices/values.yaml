@@ -6,7 +6,7 @@ gateway:
   name: api-gateway
   replicaCount: 1
   image:
-    repository: gihaa/agri-sync-gateway
+    repository: gihaa/as-gateway
     tag: latest
   service:
     type: LoadBalancer
@@ -17,7 +17,7 @@ userService:
   name: user-service
   replicaCount: 1
   image:
-    repository: gihaa/agri-sync-user
+    repository: gihaa/as-price-prediction-service
     tag: latest
   service:
     type: ClusterIP
@@ -27,7 +27,7 @@ rewardService:
   name: reward-service
   replicaCount: 1
   image:
-    repository: gihaa/agri-sync-reward
+    repository: gihaa/as-reward-service
     tag: latest
   service:
     type: ClusterIP
