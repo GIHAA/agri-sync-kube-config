@@ -1,0 +1,36 @@
+# helm/microservices/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.gateway.name }}
+spec:
+  type: {{ .Values.gateway.service.type }}
+  ports:
+    - port: {{ .Values.gateway.service.port }}
+      targetPort: {{ .Values.gateway.service.targetPort }}
+  selector:
+    app: {{ .Values.gateway.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.userService.name }}
+spec:
+  type: {{ .Values.userService.service.type }}
+  ports:
+    - port: {{ .Values.userService.service.port }}
+      targetPort: 5000
+  selector:
+    app: {{ .Values.userService.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.rewardService.name }}
+spec:
+  type: {{ .Values.rewardService.service.type }}
+  ports:
+    - port: {{ .Values.rewardService.service.port }}
+      targetPort: 5000
+  selector:
+    app: {{ .Values.rewardService.name }}

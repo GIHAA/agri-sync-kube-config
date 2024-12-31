@@ -1,0 +1,24 @@
+# argocd/applications/microservices.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: agri-sync
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/GIHAA/agri-sync-kube-config.git'
+    path: helm/microservices
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: agri-sync
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

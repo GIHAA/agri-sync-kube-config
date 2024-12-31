@@ -1,0 +1,6 @@
+# helm/microservices/Chart.yaml
+apiVersion: v2
+name: agri-sync
+description: Helm chart for Agri Sync microservices
+version: 0.1.0
+type: application
