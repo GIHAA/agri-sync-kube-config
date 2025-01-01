@@ -17,7 +17,7 @@ userService:
   name: user-service
   replicaCount: 1
   image:
-    repository: gihaa/as-price-prediction-service
+    repository: gihaa/as-user-service 
     tag: latest
   service:
     type: ClusterIP
@@ -28,6 +28,16 @@ rewardService:
   replicaCount: 1
   image:
     repository: gihaa/as-reward-service
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5000
+
+pricePredictionService:  
+  name: price-prediction-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-price-prediction-service
     tag: latest
   service:
     type: ClusterIP
