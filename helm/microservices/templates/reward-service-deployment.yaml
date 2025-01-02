@@ -2,19 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.rewardService.name }}
+  name: { { .Values.rewardService.name } }
 spec:
-  replicas: {{ .Values.rewardService.replicaCount }}
+  replicas: { { .Values.rewardService.replicaCount } }
   selector:
     matchLabels:
-      app: {{ .Values.rewardService.name }}
+      app: { { .Values.rewardService.name } }
   template:
     metadata:
       labels:
-        app: {{ .Values.rewardService.name }}
+        app: { { .Values.rewardService.name } }
     spec:
       containers:
-        - name: {{ .Values.rewardService.name }}
+        - name: { { .Values.rewardService.name } }
           image: "{{ .Values.rewardService.image.repository }}:{{ .Values.rewardService.image.tag }}"
           ports:
             - containerPort: 5000
@@ -22,32 +22,14 @@ spec:
             - name: PORT
               value: "5000"
             - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: db-credentials
-                  key: DB_HOST
+              value: { { .Values.database.host } }
             - name: DB_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: db-credentials
-                  key: DB_PORT
+              value: { { .Values.database.port | quote } }
             - name: DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: db-credentials
-                  key: DB_NAME
+              value: { { .Values.database.name } }
             - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: db-credentials
-                  key: DB_USER
+              value: { { .Values.database.user } }
             - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: db-credentials
-                  key: DB_PASSWORD
+              value: { { .Values.database.password } }
             - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: db-credentials
-                  key: JWT_SECRET
+              value: { { .Values.jwt.secret } }

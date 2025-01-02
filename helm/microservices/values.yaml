@@ -1,4 +1,3 @@
-# helm/microservices/values.yaml
 global:
   environment: development
 
@@ -17,7 +16,7 @@ userService:
   name: user-service
   replicaCount: 1
   image:
-    repository: gihaa/as-user-service 
+    repository: gihaa/as-user-service
     tag: latest
   service:
     type: ClusterIP
@@ -33,7 +32,7 @@ rewardService:
     type: ClusterIP
     port: 5000
 
-pricePredictionService:  
+pricePredictionService:
   name: price-prediction-service
   replicaCount: 1
   image:
@@ -42,3 +41,14 @@ pricePredictionService:
   service:
     type: ClusterIP
     port: 5000
+
+database:
+  user: "avnadmin"
+  password: "AVNS_lP0uW9A3_MC4As3h-NL"
+  host: "pg-122ba407-gihansudeeparandimal-f684.g.aivencloud.com"
+  port: "17670"
+  name: "defaultdb"
+
+jwt:
+  secret: "your_jwt_secret"
+  expiresIn: "30d"

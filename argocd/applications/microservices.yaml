@@ -13,7 +13,6 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-        - values-secrets.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: agri-sync

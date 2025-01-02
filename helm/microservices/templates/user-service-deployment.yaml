@@ -14,45 +14,24 @@ spec:
        app: {{ .Values.userService.name }}
    spec:
      containers:
-       - name: {{ .Values.userService.name }}
-         image: "{{ .Values.userService.image.repository }}:{{ .Values.userService.image.tag }}"
-         ports:
-           - containerPort: 5000
-         env:
-           - name: PORT
-             value: "5000"
-           - name: DB_HOST
-             valueFrom:
-               secretKeyRef:
-                 name: db-credentials
-                 key: DB_HOST
-           - name: DB_PORT
-             valueFrom:
-               secretKeyRef:
-                 name: db-credentials
-                 key: DB_PORT
-           - name: DB_NAME
-             valueFrom:
-               secretKeyRef:
-                 name: db-credentials
-                 key: DB_NAME
-           - name: DB_USER
-             valueFrom:
-               secretKeyRef:
-                 name: db-credentials
-                 key: DB_USER
-           - name: DB_PASSWORD
-             valueFrom:
-               secretKeyRef:
-                 name: db-credentials
-                 key: DB_PASSWORD
-           - name: JWT_SECRET
-             valueFrom:
-               secretKeyRef:
-                 name: db-credentials
-                 key: JWT_SECRET
-           - name: JWT_EXPIRES_IN
-             valueFrom:
-               secretKeyRef:
-                 name: db-credentials
-                 key: JWT_EXPIRES_IN
+     - name: {{ .Values.userService.name }}
+       image: "{{ .Values.userService.image.repository }}:{{ .Values.userService.image.tag }}"
+       ports:
+       - containerPort: 5000
+       env:
+       - name: PORT
+         value: "5000"
+       - name: DB_HOST
+         value: {{ .Values.database.host }}
+       - name: DB_PORT
+         value: {{ .Values.database.port | quote }}
+       - name: DB_NAME
+         value: {{ .Values.database.name }}
+       - name: DB_USER
+         value: {{ .Values.database.user }}
+       - name: DB_PASSWORD
+         value: {{ .Values.database.password }}
+       - name: JWT_SECRET
+         value: {{ .Values.jwt.secret }}
+       - name: JWT_EXPIRES_IN
+         value: {{ .Values.jwt.expiresIn }}
