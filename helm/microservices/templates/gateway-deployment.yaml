@@ -27,3 +27,7 @@ spec:
               value: "http://{{ .Values.rewardService.name }}:{{ .Values.rewardService.service.port }}"
             - name: JWT_SECRET
               value: {{ .Values.jwt.secret }}
+            - name: DB_SSL
+              value: "true"
+            - name: DB_SSL_REJECT_UNAUTHORIZED
+              value: "false"

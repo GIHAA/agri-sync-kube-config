@@ -32,3 +32,7 @@ spec:
               value: {{ .Values.database.password }}
             - name: JWT_SECRET
               value: {{ .Values.jwt.secret }}
+            - name: DB_SSL
+              value: "true"
+            - name: DB_SSL_REJECT_UNAUTHORIZED
+              value: "false"

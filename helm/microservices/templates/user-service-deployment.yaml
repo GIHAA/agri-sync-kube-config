@@ -35,3 +35,7 @@ spec:
          value: {{ .Values.jwt.secret }}
        - name: JWT_EXPIRES_IN
          value: {{ .Values.jwt.expiresIn }}
+       - name: DB_SSL
+         value: "true"
+       - name: DB_SSL_REJECT_UNAUTHORIZED
+         value: "false"
