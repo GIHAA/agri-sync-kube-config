@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: 'https://github.com/GIHAA/agri-sync-kube-config.git'
     path: helm/microservices
-    targetRevision: HEAD
+    targetRevision: develop
     helm:
       valueFiles:
         - values.yaml
