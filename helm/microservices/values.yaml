@@ -3,7 +3,7 @@ global:
 
 gateway:
   name: api-gateway
-  replicaCount: 1
+  replicaCount: 2
   image:
     repository: gihaa/as-gateway
     tag: latest
