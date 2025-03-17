@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.userinter.name }}
+spec:
+  replicas: {{ .Values.userinter.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.userinter.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.userinter.name }}
+    spec:
+      containers:
+        - name: {{ .Values.userinter.name }}
+          image: "{{ .Values.userinter.image.repository }}:{{ .Values.userinter.image.tag }}"
+          ports:
+            - containerPort: 4001
