@@ -8,9 +8,6 @@ gateway:
     repository: gihaa/as-gateway
     tag: latest
   service:
-    # type: LoadBalancer  # Original LoadBalancer type (commented) for cloud deployments
-    # port: 80            # Original LoadBalancer port (commented)
-    # targetPort: 3000    # Original LoadBalancer targetPort (commented)
     type: NodePort        # Using NodePort for Minikube
     port: 80              # The port for the service
     targetPort: 3000      # Target port inside the container
@@ -45,6 +42,42 @@ pricePredictionService:
   service:
     type: ClusterIP
     port: 5000
+
+frontend:
+  name: frontend
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    type: NodePort  
+    port: 80       
+    targetPort: 4000  
+    nodePort: 31001      
+
+userinter:
+  name: user-interaction-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    type: NodePort  
+    port: 80       
+    targetPort: 4001
+    nodePort: 31002      
+
+chatbot:
+  name: chat-bot-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    type: NodePort  
+    port: 80       
+    targetPort: 4002 
+    nodePort: 31003  
 
 database:
   user: "avnadmin"
