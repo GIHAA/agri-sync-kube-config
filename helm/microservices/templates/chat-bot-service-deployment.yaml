@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.chatbot.name }}
+spec:
+  replicas: {{ .Values.chatbot.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.chatbot.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.chatbot.name }}
+    spec:
+      containers:
+        - name: {{ .Values.chatbot.name }}
+          image: "{{ .Values.chatbot.image.repository }}:{{ .Values.chatbot.image.tag }}"
+          ports:
+            - containerPort: 4002

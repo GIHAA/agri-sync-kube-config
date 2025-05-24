@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.pricePredictionService.name }}
+spec:
+  replicas: {{ .Values.pricePredictionService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.pricePredictionService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.pricePredictionService.name }}
+    spec:
+      containers:
+        - name: {{ .Values.pricePredictionService.name }}
+          image: "{{ .Values.pricePredictionService.image.repository }}:{{ .Values.pricePredictionService.image.tag }}"
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PORT
+              value: "5000"
+            - name: DB_HOST
+              value: {{ .Values.database.host }}
+            - name: DB_PORT
+              value: {{ .Values.database.port | quote }}
+            - name: DB_NAME
+              value: {{ .Values.database.name }}
+            - name: DB_USER
+              value: {{ .Values.database.user }}
+            - name: DB_PASSWORD
+              value: {{ .Values.database.password }}
+            - name: JWT_SECRET
+              value: {{ .Values.jwt.secret }}
+            - name: DB_SSL
+              value: "true"
+            - name: DB_SSL_REJECT_UNAUTHORIZED
+              value: "false"

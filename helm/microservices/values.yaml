@@ -42,6 +42,42 @@ pricePredictionService:
     type: ClusterIP
     port: 5000
 
+frontend:
+  name: frontend
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    type: NodePort  
+    port: 80       
+    targetPort: 4000  
+    nodePort: 31001      
+
+userinter:
+  name: user-interaction-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    type: NodePort  
+    port: 80       
+    targetPort: 4001
+    nodePort: 31002      
+
+chatbot:
+  name: chat-bot-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    type: NodePort  
+    port: 80       
+    targetPort: 4002 
+    nodePort: 31003  
+
 database:
   user: "avnadmin"
   password: "AVNS_lP0uW9A3_MC4As3h-NL"
