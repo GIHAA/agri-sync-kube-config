@@ -33,7 +33,7 @@ spec:
   type: {{ .Values.rewardService.service.type }}
   ports:
     - port: {{ .Values.rewardService.service.port }}
-      targetPort: 5000
+      targetPort: 3003
   selector:
     app: {{ .Values.rewardService.name }}
 ---
@@ -45,7 +45,7 @@ spec:
   type: {{ .Values.pricePredictionService.service.type }}
   ports:
     - port: {{ .Values.pricePredictionService.service.port }}
-      targetPort: 5000
+      targetPort: 3002
   selector:
     app: {{ .Values.pricePredictionService.name }}
 ---
