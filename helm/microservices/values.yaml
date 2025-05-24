@@ -20,7 +20,7 @@ userService:
     tag: latest
   service:
     type: ClusterIP
-    port: 5000
+    port: 3001
 
 rewardService:
   name: reward-service
@@ -30,7 +30,7 @@ rewardService:
     tag: latest
   service:
     type: ClusterIP
-    port: 5000
+    port: 3003
 
 pricePredictionService:
   name: price-prediction-service
@@ -40,7 +40,7 @@ pricePredictionService:
     tag: latest
   service:
     type: ClusterIP
-    port: 5000
+    port: 3002
 
 frontend:
   name: frontend
@@ -61,10 +61,8 @@ userinter:
     repository: gihaa/as-gateway
     tag: latest
   service:
-    type: NodePort  
-    port: 80       
-    targetPort: 4001
-    nodePort: 31002      
+    type: ClusterIP
+    port: 3005    
 
 chatbot:
   name: chat-bot-service
@@ -73,10 +71,8 @@ chatbot:
     repository: gihaa/as-gateway
     tag: latest
   service:
-    type: NodePort  
-    port: 80       
-    targetPort: 4002 
-    nodePort: 31003  
+    type: ClusterIP
+    port: 3007    
 
 database:
   user: "avnadmin"
