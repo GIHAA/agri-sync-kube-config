@@ -8,6 +8,9 @@ spec:
   ports:
     - port: {{ .Values.gateway.service.port }}
       targetPort: {{ .Values.gateway.service.targetPort }}
+      {{- if eq .Values.gateway.service.type "NodePort" }}
+      nodePort: {{ .Values.gateway.service.nodePort }}
+      {{- end }}
   selector:
     app: {{ .Values.gateway.name }}
 ---

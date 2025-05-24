@@ -8,13 +8,9 @@ gateway:
     repository: gihaa/as-gateway
     tag: latest
   service:
-    # type: LoadBalancer  # Original LoadBalancer type (commented) for cloud deployments
-    # port: 80            # Original LoadBalancer port (commented)
-    # targetPort: 3000    # Original LoadBalancer targetPort (commented)
-    type: NodePort        # Using NodePort for Minikube
-    port: 80              # The port for the service
-    targetPort: 3000      # Target port inside the container
-    nodePort: 31000       # Optional: Specify NodePort (30000-32767 range)
+    type: LoadBalancer
+    port: 80
+    targetPort: 3000
 
 userService:
   name: user-service

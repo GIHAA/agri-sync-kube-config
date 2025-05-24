@@ -1,0 +1,249 @@
+Directory structure:
+└── agri-sync-kube-config/helm/
+    └── microservices/
+        ├── Chart.yaml
+        ├── templates/
+        │   ├── services.yaml
+        │   ├── reward-service-deployment.yaml
+        │   ├── user-service-deployment.yaml
+        │   └── gateway-deployment.yaml
+        └── values.yaml
+
+================================================
+File: /microservices/Chart.yaml
+================================================
+# helm/microservices/Chart.yaml
+apiVersion: v2
+name: agri-sync
+description: Helm chart for Agri Sync microservices
+version: 0.1.0
+type: application
+
+================================================
+File: /microservices/templates/services.yaml
+================================================
+# helm/microservices/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.gateway.name }}
+spec:
+  type: {{ .Values.gateway.service.type }}
+  ports:
+    - port: {{ .Values.gateway.service.port }}
+      targetPort: {{ .Values.gateway.service.targetPort }}
+  selector:
+    app: {{ .Values.gateway.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.userService.name }}
+spec:
+  type: {{ .Values.userService.service.type }}
+  ports:
+    - port: {{ .Values.userService.service.port }}
+      targetPort: 5000
+  selector:
+    app: {{ .Values.userService.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.rewardService.name }}
+spec:
+  type: {{ .Values.rewardService.service.type }}
+  ports:
+    - port: {{ .Values.rewardService.service.port }}
+      targetPort: 5000
+  selector:
+    app: {{ .Values.rewardService.name }}
+
+================================================
+File: /microservices/templates/reward-service-deployment.yaml
+================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.rewardService.name }}
+spec:
+  replicas: {{ .Values.rewardService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.rewardService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.rewardService.name }}
+    spec:
+      containers:
+        - name: {{ .Values.rewardService.name }}
+          image: "{{ .Values.rewardService.image.repository }}:{{ .Values.rewardService.image.tag }}"
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PORT
+              value: "5000"
+            - name: DB_HOST
+              value: {{ .Values.database.host }}
+            - name: DB_PORT
+              value: {{ .Values.database.port | quote }}
+            - name: DB_NAME
+              value: {{ .Values.database.name }}
+            - name: DB_USER
+              value: {{ .Values.database.user }}
+            - name: DB_PASSWORD
+              value: {{ .Values.database.password }}
+            - name: JWT_SECRET
+              value: {{ .Values.jwt.secret }}
+            - name: DB_SSL
+              value: "true"
+            - name: DB_SSL_REJECT_UNAUTHORIZED
+              value: "false"
+
+
+================================================
+File: /microservices/templates/user-service-deployment.yaml
+================================================
+# helm/microservices/templates/user-service-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: {{ .Values.userService.name }}
+spec:
+ replicas: {{ .Values.userService.replicaCount }}
+ selector:
+   matchLabels:
+     app: {{ .Values.userService.name }}
+ template:
+   metadata:
+     labels:
+       app: {{ .Values.userService.name }}
+   spec:
+     containers:
+     - name: {{ .Values.userService.name }}
+       image: "{{ .Values.userService.image.repository }}:{{ .Values.userService.image.tag }}"
+       ports:
+       - containerPort: 5000
+       env:
+       - name: PORT
+         value: "5000"
+       - name: DB_HOST
+         value: {{ .Values.database.host }}
+       - name: DB_PORT
+         value: {{ .Values.database.port | quote }}
+       - name: DB_NAME
+         value: {{ .Values.database.name }}
+       - name: DB_USER
+         value: {{ .Values.database.user }}
+       - name: DB_PASSWORD
+         value: {{ .Values.database.password }}
+       - name: JWT_SECRET
+         value: {{ .Values.jwt.secret }}
+       - name: JWT_EXPIRES_IN
+         value: {{ .Values.jwt.expiresIn }}
+       - name: DB_SSL
+         value: "true"
+       - name: DB_SSL_REJECT_UNAUTHORIZED
+         value: "false"
+
+================================================
+File: /microservices/templates/gateway-deployment.yaml
+================================================
+# helm/microservices/templates/gateway-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.gateway.name }}
+spec:
+  replicas: {{ .Values.gateway.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.gateway.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.gateway.name }}
+    spec:
+      containers:
+        - name: {{ .Values.gateway.name }}
+          image: "{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag }}"
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: USER_SERVICE_URL
+              value: "http://{{ .Values.userService.name }}:{{ .Values.userService.service.port }}"
+            - name: REWARD_SERVICE_URL
+              value: "http://{{ .Values.rewardService.name }}:{{ .Values.rewardService.service.port }}"
+            - name: JWT_SECRET
+              value: {{ .Values.jwt.secret }}
+            - name: DB_SSL
+              value: "true"
+            - name: DB_SSL_REJECT_UNAUTHORIZED
+              value: "false"
+
+================================================
+File: /microservices/values.yaml
+================================================
+global:
+  environment: development
+
+gateway:
+  name: api-gateway
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    # type: LoadBalancer  # Original LoadBalancer type (commented) for cloud deployments
+    # port: 80            # Original LoadBalancer port (commented)
+    # targetPort: 3000    # Original LoadBalancer targetPort (commented)
+    type: NodePort        # Using NodePort for Minikube
+    port: 80              # The port for the service
+    targetPort: 3000      # Target port inside the container
+    nodePort: 31000       # Optional: Specify NodePort (30000-32767 range)
+
+userService:
+  name: user-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-user-service
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5000
+
+rewardService:
+  name: reward-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-reward-service
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5000
+
+pricePredictionService:
+  name: price-prediction-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-price-prediction-service
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5000
+
+database:
+  user: "avnadmin"
+  password: "AVNS_lP0uW9A3_MC4As3h-NL"
+  host: "pg-122ba407-gihansudeeparandimal-f684.g.aivencloud.com"
+  port: "17670"
+  name: "defaultdb"
+
+jwt:
+  secret: "your_jwt_secret"
+  expiresIn: "30d"
+
+
