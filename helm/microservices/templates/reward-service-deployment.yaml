@@ -16,10 +16,10 @@ spec:
         - name: {{ .Values.rewardService.name }}
           image: "{{ .Values.rewardService.image.repository }}:{{ .Values.rewardService.image.tag }}"
           ports:
-            - containerPort: 5000
+            - containerPort: 3003
           env:
             - name: PORT
-              value: "5000"
+              value: "3003"
             - name: DB_HOST
               value: {{ .Values.database.host }}
             - name: DB_PORT
