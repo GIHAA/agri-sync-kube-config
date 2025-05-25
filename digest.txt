@@ -3,10 +3,14 @@ Directory structure:
     └── microservices/
         ├── Chart.yaml
         ├── templates/
+        │   ├── chat-bot-service-deployment.yaml
         │   ├── services.yaml
         │   ├── reward-service-deployment.yaml
         │   ├── user-service-deployment.yaml
-        │   └── gateway-deployment.yaml
+        │   ├── frontend-deployment.yaml
+        │   ├── gateway-deployment.yaml
+        │   ├── user-interaction-service-deployment.yaml
+        │   └── price-prediction-service-deployment.yaml
         └── values.yaml
 
 ================================================
@@ -20,9 +24,32 @@ version: 0.1.0
 type: application
 
 ================================================
+File: /microservices/templates/chat-bot-service-deployment.yaml
+================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.chatbot.name }}
+spec:
+  replicas: {{ .Values.chatbot.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.chatbot.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.chatbot.name }}
+    spec:
+      containers:
+        - name: {{ .Values.chatbot.name }}
+          image: "{{ .Values.chatbot.image.repository }}:{{ .Values.chatbot.image.tag }}"
+          ports:
+            - containerPort: 4002
+
+
+================================================
 File: /microservices/templates/services.yaml
 ================================================
-# helm/microservices/templates/services.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -32,6 +59,9 @@ spec:
   ports:
     - port: {{ .Values.gateway.service.port }}
       targetPort: {{ .Values.gateway.service.targetPort }}
+      {{- if eq .Values.gateway.service.type "NodePort" }}
+      nodePort: {{ .Values.gateway.service.nodePort }}
+      {{- end }}
   selector:
     app: {{ .Values.gateway.name }}
 ---
@@ -55,9 +85,61 @@ spec:
   type: {{ .Values.rewardService.service.type }}
   ports:
     - port: {{ .Values.rewardService.service.port }}
-      targetPort: 5000
+      targetPort: 3003
   selector:
     app: {{ .Values.rewardService.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.pricePredictionService.name }}
+spec:
+  type: {{ .Values.pricePredictionService.service.type }}
+  ports:
+    - port: {{ .Values.pricePredictionService.service.port }}
+      targetPort: 3002
+  selector:
+    app: {{ .Values.pricePredictionService.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.frontend.name }}
+spec:
+  type: {{ .Values.frontend.service.type }}
+  ports:
+    - port: {{ .Values.frontend.service.port }}
+      targetPort: {{ .Values.frontend.service.targetPort }}
+      nodePort: {{ .Values.frontend.service.nodePort }}
+  selector:
+    app: {{ .Values.frontend.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.userinter.name }}
+spec:
+  type: {{ .Values.userinter.service.type }}
+  ports:
+    - port: {{ .Values.userinter.service.port }}
+      targetPort: {{ .Values.userinter.service.targetPort }}
+      nodePort: {{ .Values.userinter.service.nodePort }}
+  selector:
+    app: {{ .Values.userinter.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.chatbot.name }}
+spec:
+  type: {{ .Values.chatbot.service.type }}
+  ports:
+    - port: {{ .Values.chatbot.service.port }}
+      targetPort: {{ .Values.chatbot.service.targetPort }}
+      nodePort: {{ .Values.chatbot.service.nodePort }}
+  selector:
+    app: {{ .Values.chatbot.name }}
+
 
 ================================================
 File: /microservices/templates/reward-service-deployment.yaml
@@ -80,10 +162,10 @@ spec:
         - name: {{ .Values.rewardService.name }}
           image: "{{ .Values.rewardService.image.repository }}:{{ .Values.rewardService.image.tag }}"
           ports:
-            - containerPort: 5000
+            - containerPort: 3003
           env:
             - name: PORT
-              value: "5000"
+              value: "3003"
             - name: DB_HOST
               value: {{ .Values.database.host }}
             - name: DB_PORT
@@ -148,6 +230,30 @@ spec:
          value: "false"
 
 ================================================
+File: /microservices/templates/frontend-deployment.yaml
+================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.frontend.name }}
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.frontend.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.frontend.name }}
+    spec:
+      containers:
+        - name: {{ .Values.frontend.name }}
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          ports:
+            - containerPort: 4000
+
+
+================================================
 File: /microservices/templates/gateway-deployment.yaml
 ================================================
 # helm/microservices/templates/gateway-deployment.yaml
@@ -185,6 +291,73 @@ spec:
               value: "false"
 
 ================================================
+File: /microservices/templates/user-interaction-service-deployment.yaml
+================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.userinter.name }}
+spec:
+  replicas: {{ .Values.userinter.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.userinter.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.userinter.name }}
+    spec:
+      containers:
+        - name: {{ .Values.userinter.name }}
+          image: "{{ .Values.userinter.image.repository }}:{{ .Values.userinter.image.tag }}"
+          ports:
+            - containerPort: 4001
+
+
+================================================
+File: /microservices/templates/price-prediction-service-deployment.yaml
+================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.pricePredictionService.name }}
+spec:
+  replicas: {{ .Values.pricePredictionService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.pricePredictionService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.pricePredictionService.name }}
+    spec:
+      containers:
+        - name: {{ .Values.pricePredictionService.name }}
+          image: "{{ .Values.pricePredictionService.image.repository }}:{{ .Values.pricePredictionService.image.tag }}"
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PORT
+              value: "5000"
+            - name: DB_HOST
+              value: {{ .Values.database.host }}
+            - name: DB_PORT
+              value: {{ .Values.database.port | quote }}
+            - name: DB_NAME
+              value: {{ .Values.database.name }}
+            - name: DB_USER
+              value: {{ .Values.database.user }}
+            - name: DB_PASSWORD
+              value: {{ .Values.database.password }}
+            - name: JWT_SECRET
+              value: {{ .Values.jwt.secret }}
+            - name: DB_SSL
+              value: "true"
+            - name: DB_SSL_REJECT_UNAUTHORIZED
+              value: "false"
+
+
+================================================
 File: /microservices/values.yaml
 ================================================
 global:
@@ -197,13 +370,9 @@ gateway:
     repository: gihaa/as-gateway
     tag: latest
   service:
-    # type: LoadBalancer  # Original LoadBalancer type (commented) for cloud deployments
-    # port: 80            # Original LoadBalancer port (commented)
-    # targetPort: 3000    # Original LoadBalancer targetPort (commented)
-    type: NodePort        # Using NodePort for Minikube
-    port: 80              # The port for the service
-    targetPort: 3000      # Target port inside the container
-    nodePort: 31000       # Optional: Specify NodePort (30000-32767 range)
+    type: LoadBalancer
+    port: 80
+    targetPort: 3000
 
 userService:
   name: user-service
@@ -213,7 +382,7 @@ userService:
     tag: latest
   service:
     type: ClusterIP
-    port: 5000
+    port: 3001
 
 rewardService:
   name: reward-service
@@ -223,7 +392,7 @@ rewardService:
     tag: latest
   service:
     type: ClusterIP
-    port: 5000
+    port: 3003
 
 pricePredictionService:
   name: price-prediction-service
@@ -233,7 +402,39 @@ pricePredictionService:
     tag: latest
   service:
     type: ClusterIP
-    port: 5000
+    port: 3002
+
+frontend:
+  name: frontend
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    type: NodePort  
+    port: 80       
+    targetPort: 4000  
+    nodePort: 31001      
+
+userinter:
+  name: user-interaction-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 3005    
+
+chatbot:
+  name: chat-bot-service
+  replicaCount: 1
+  image:
+    repository: gihaa/as-gateway
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 3007    
 
 database:
   user: "avnadmin"

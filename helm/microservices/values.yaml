@@ -46,13 +46,12 @@ frontend:
   name: frontend
   replicaCount: 1
   image:
-    repository: gihaa/as-gateway
+    repository: gihaa/as-front-end-admin
     tag: latest
   service:
-    type: NodePort  
-    port: 80       
+    type: LoadBalancer
+    port: 80
     targetPort: 4000  
-    nodePort: 31001      
 
 userinter:
   name: user-interaction-service
