@@ -57,7 +57,7 @@ userinter:
   name: user-interaction-service
   replicaCount: 1
   image:
-    repository: gihaa/as-gateway
+    repository: gihaa/ui-optimization-service
     tag: latest
   service:
     type: ClusterIP
