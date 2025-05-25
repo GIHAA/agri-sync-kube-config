@@ -46,7 +46,7 @@ frontend:
   name: frontend
   replicaCount: 1
   image:
-    repository: gihaa/as-front-end-admin
+    repository: gihaa/as-gateway
     tag: latest
   service:
     type: LoadBalancer
